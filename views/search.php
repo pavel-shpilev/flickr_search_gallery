@@ -1,15 +1,20 @@
 <?php
 
+/**
+ * Search page view.
+ */
 class View extends AbstractView {
 	
 	function index() {
 		// No arguments passed. Return empty search form.
-		if (empty($_POST) && empty($_GET)) {
-			return self::render_to_response('search.php');
+		if ((!isset($_POST['search_query']) || $_POST['search_query'] === '') &&
+		(!isset($_GET['search_query']) || $_GET['search_query'] === '')) {
+			return self::render_to_response('search.phtml');
 		}
 		
-		// New search query passed.
-		if (isset($_POST['search_query']) && $_POST['search_query'] != '') {
+		// New search query.
+		elseif (isset($_POST['search_query']) && $_POST['search_query'] != '') {
+			$searched_text = $_POST['search_query'];
 			$search_request_params = array(
 				'method'	=> 'flickr.photos.search',
 				'per_page'	=> 5,
@@ -20,8 +25,9 @@ class View extends AbstractView {
 		
 		// Navigating over previous search results.
 		elseif (isset($_GET['search_query']) && $_GET['search_query'] != '') {
+			$searched_text = $_GET['search_query'];
 			$page_num = 1;
-			if (isset($_GET['page_num'])) $page_num = (int)$_GET['page_num'];
+			if (isset($_GET['page'])) $page_num = (int)$_GET['page'];
 			$search_request_params = array(
 				'method'	=> 'flickr.photos.search',
 				'per_page'	=> 5,
@@ -36,15 +42,17 @@ class View extends AbstractView {
 		
 		// Rendering output.
 		if ($response['stat'] == 'ok') {
-			return self::render_to_response('search.php', array(
+			return self::render_to_response('search.phtml', array(
 				'photos' => $response['photos']['photo'],
 				'page' => $response['photos']['page'],
 				'pages' => $response['photos']['pages'],
 				'total' => $response['photos']['total'],
+				'searched_text' => isset($searched_text) ? $searched_text : ''
 			));
+		// Displaying error.
 		} else {
-			return self::render_to_response('search.php', array(
-				'error_msg' => 'Error sending API request.'
+			return self::render_to_response('search.phtml', array(
+				'error_msg' => $response['message']
 			));
 		}
 	}

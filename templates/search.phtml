@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Flickr Search</title>
+</head>
+
+<body>
+
+<table cellspacing="0" cellpadding="20" align="center">
+	<tr>
+		<td scope="col" colspan="5" align="center">
+		<form method="post" action="/">
+		<label>Search pictures with tag </label>
+		<input type="text" size="40" value="<?php echo $this->args['searched_text']; ?>" name="search_query" /><input type="submit" value="Search" />
+		</form>
+		<?php
+		if (isset($this->args['searched_text'])) {
+			echo "<small><br />";
+			echo "Found " . $this->args['total'] . " images on " . $this->args['pages'] . " pages.";
+			echo "</small>";
+		}
+		?>
+		</td>
+	</tr>
+	
+	<?php
+	if (isset($this->args['error_msg'])) {
+		echo "<tr><td scope=\"col\" colspan=\"5\" align=\"center\">";
+		echo "<p><font color=\"red\">Error: " . $this->args['error_msg'] . "</font></p>";
+		echo "</td></tr>";
+	}
+	?>
+
+	<tr>
+	<?php
+	foreach ($this->args['photos'] as $photo) {
+		echo "<td><a href=\"/index.php/image?photo_id=".$photo['id']."&secret=".$photo['secret']."\" target=\"_blank\"><img src=\"http://farm".$photo['farm'].".staticflickr.com/".$photo['server']."/".$photo['id']."_".$photo['secret']."_t.jpg\" /></a></td>";
+	}
+	?>
+	</tr>
+
+	<?php
+	if (isset($this->args['searched_text'])) {
+		echo "<tr>";
+			echo "<td colspan=\"5\" align=\"center\">";
+			if ((int)$this->args['pages'] > 1) {
+				echo "<table align=\"center\" cellpadding=\"5\">";
+				echo "<tr>";
+				if ((int)$this->args['page'] > 1) echo "<td><a href=\"/?search_query=".$this->args['searched_text']."&page=".((int)$this->args['page']-1)."\">&laquo; Previous</a></td>";
+				if ((int)$this->args['page'] > 2) echo "<td><a href=\"/?search_query=".$this->args['searched_text']."&page=".((int)$this->args['page']-2)."\">".((int)$this->args['page']-2)."</a></td>";
+				if ((int)$this->args['page'] > 1) echo "<td><a href=\"/?search_query=".$this->args['searched_text']."&page=".((int)$this->args['page']-1)."\">".((int)$this->args['page']-1)."</a></td>";
+				echo "<td><b>".$this->args['page']."</b></td>";
+				if ((int)$this->args['page'] < (int)$this->args['pages']-1) echo "<td><a href=\"/?search_query=".$this->args['searched_text']."&page=".((int)$this->args['page']+1)."\">".((int)$this->args['page']+1)."</a></td>";
+				if ((int)$this->args['page'] < (int)$this->args['pages']-2) echo "<td><a href=\"/?search_query=".$this->args['searched_text']."&page=".((int)$this->args['page']+2)."\">".((int)$this->args['page']+2)."</a></td>";
+				if ((int)$this->args['page'] < (int)$this->args['pages']) echo "<td><a href=\"/?search_query=".$this->args['searched_text']."&page=".((int)$this->args['page']+1)."\">Next &raquo;</a></td>";
+				echo "</tr>";
+				echo "</table>";
+			}
+			echo "<form method=\"get\" action=\"/\">";
+			echo "<input type=\"hidden\" name=\"search_query\" value=\"".$this->args['searched_text']."\" />";
+			echo "<label>Navigate to page </label>";
+			echo "<input type=\"text\" size=\"3\" name=\"page\" /><input type=\"submit\" value=\"Go\" />";
+			echo "</form>";
+			echo "</td>";
+		echo "</tr>";
+	}
+	?>
+</table>
+
+
+</body>
+</html>

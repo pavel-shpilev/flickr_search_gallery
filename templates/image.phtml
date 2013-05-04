@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Flickr Search</title>
+</head>
+
+<body>
+
+<?php
+if (isset($this->args['photo'])) :
+?>
+	<h1><?php echo $this->args['photo']['title']['_content']; ?></h1>
+	<div>Author: <?php echo $this->args['photo']['owner']['username']; ?></div>
+	<?php
+	$url = "http://farm".$this->args['photo']['farm'].".staticflickr.com/".$this->args['photo']['server']."/".$this->args['photo']['id']."_";
+	if (isset($this->args['photo']['originalsecret'])) $url .= $this->args['photo']['originalsecret']."_o.".$this->args['photo']['originalformat'];
+	else $url .= $this->args['photo']['secret']."_b.jpg";
+	?>
+	<img src="<?php echo $url; ?>" />
+<?php
+endif;
+
+if (isset($this->args['error_msg'])) {
+	echo "<p><font color=\"red\">Error: " . $this->args['error_msg'] . "</font></p>";
+}
+?>
+</body>
+</html>

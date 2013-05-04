@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Basic view functionality.
+ */
 abstract class AbstractView {
 	
 	function redirect($url) {

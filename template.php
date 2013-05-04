@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Basic template functionality.
+ */
 class Template {
 	private $args;
 	private $file;
