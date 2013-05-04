@@ -2,23 +2,43 @@
 
 require_once 'config.php';
 require_once 'api.php';
+require_once 'view.php';
 
 $config = new Config();
 
-$search_request_params = array(
-	'method'	=> 'flickr.photos.search',
-	'per_page'	=> $config->getParam('photos_per_page'),
-	'page'		=> 1,
-	'text'		=> 'cat'
-);
-$search_request = new ApiRequest($search_request_params);
-$response = $search_request->getResponse();
-
-if ($response['stat'] == 'ok') {
-	$photo_title = $response['photo']['title']['_content'];
-	echo "Title is $photo_title!";
-} else{
-	echo "Call failed!";
+// Get request url and script url.
+$request_url = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : '';
+$script_url  = (isset($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : '';
+// Get the url path and trim the / of the left and the right.
+if ($request_url != $script_url) {
+	$url = trim(preg_replace('/' . str_replace('/', '\/', str_replace('index.php', '', $script_url)) . '/', '', $request_url, 1), '/');
 }
+// Split the url into segments.
+$arguments_str = substr($url, strpos($url, '?'));
+parse_str($arguments, $arguments);
+$segments = explode('/', str_replace($arguments_str, '', $url));
+
+// Determining view and action.
+if (isset($segments[0]) && $segments[0] != '') {
+	$view = $segments[0];
+} else {
+	// Default view.
+	$view = 'search';
+}
+if (isset($segments[1]) && $segments[1] != '') {
+	$action = $segments[1];
+} else {
+	// Default action on the view.
+	$action = 'index';
+}
+$view_path = 'views' . DIRECTORY_SEPARATOR . $view . '.php';
+if (file_exists($view_path)) {
+	require_once($view_path);
+} else {
+	require_once('views' . DIRECTORY_SEPARATOR . '404.php');
+}
+
+// Call the requested action, passing the arguments.
+call_user_func_array(array('View', $action), $arguments);
 
 ?>

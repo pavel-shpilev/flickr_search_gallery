@@ -9,6 +9,7 @@ class ApiRequest {
 	
 	function __construct($extra_params) {
 		global $config;
+
 		$params = array(
 			'api_key'	=> $config->getParam('api_key'),
 			'format'	=> 'php_serial'
