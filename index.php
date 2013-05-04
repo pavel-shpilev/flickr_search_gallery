@@ -2,6 +2,7 @@
 
 require_once 'config.php';
 require_once 'api.php';
+require_once 'template.php';
 require_once 'view.php';
 
 $config = new Config();
@@ -15,7 +16,6 @@ if ($request_url != $script_url) {
 }
 // Split the url into segments.
 $arguments_str = substr($url, strpos($url, '?'));
-parse_str($arguments, $arguments);
 $segments = explode('/', str_replace($arguments_str, '', $url));
 
 // Determining view and action.
@@ -38,7 +38,7 @@ if (file_exists($view_path)) {
 	require_once('views' . DIRECTORY_SEPARATOR . '404.php');
 }
 
-// Call the requested action, passing the arguments.
-call_user_func_array(array('View', $action), $arguments);
+// Call the requested action.
+echo call_user_func(array('View', $action));
 
 ?>

@@ -8,7 +8,7 @@ final class Config {
 	private $data = array();
 	
 	function __construct() {
-		$settings = parse_ini_file('settings.ini');
+		$settings = parse_ini_file('config.ini');
 		foreach ($settings as $param => $value) {
 			$this->data[$param] = $value;
 		}
