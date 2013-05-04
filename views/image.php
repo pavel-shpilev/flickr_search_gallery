@@ -27,8 +27,8 @@ class View extends AbstractView {
 				return self::render_to_response('image.phtml', array(
 						'photo' => $response['photo']
 				));
+			// Displaying error.
 			} else {
-			// Display error.
 				return self::render_to_response('image.phtml', array(
 						'error_msg' => $response['message']
 				));
